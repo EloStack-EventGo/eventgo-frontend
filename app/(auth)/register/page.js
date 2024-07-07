@@ -19,6 +19,8 @@ export default function Register() {
   }, []);
 
   const onSubmit = async (data) => {
+
+
     try {
       const response = await fetch('http://localhost:8888/signup', {
         method: 'POST',
@@ -37,6 +39,7 @@ export default function Register() {
       }
     } catch (error) {
       alert('An error occurred during signup, please try again.');
+      console.log(error)
     }
   };
 

@@ -5,9 +5,18 @@ import { FaEnvelope, FaLock } from 'react-icons/fa';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  
+  
+  function delayForSeconds(seconds) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(); // Signal completion after the delay
+      }, seconds * 1000); // Convert seconds to milliseconds
+    });
+  }
+  
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     try {
       const response = await fetch('http://localhost:8888/login', {
         method: 'POST',
@@ -29,6 +38,13 @@ export default function Login() {
       console.error('Error during login:', error);
     }*/
       console.log(data);
+      delayForSeconds(5) // Wait for 2 seconds
+    .then(() => {
+      console.log("2 seconds have passed!");
+    })
+    .catch(error => {
+      console.error("Error occurred during delay:", error);
+    });
       if (data.Error) {
           console.error(data.ErrorDetail);
       } else {
