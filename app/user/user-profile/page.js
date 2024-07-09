@@ -18,6 +18,9 @@ const UserProfile = () => {
     const userData = {
       name: "John Doe",
       email: "john.doe@example.com",
+      mobile: "123-456-7890",
+      address: "123 Main St, Anytown, USA",
+      // contactNumber: "123-456-7890", // Added contactNumber field
     };
     setUser(userData);
 
@@ -46,6 +49,22 @@ const UserProfile = () => {
 
     // fetchUserProfile();
   }, []); // Removed [router] dependency for testing
+  const handleLogout = () => {
+    // localStorage.removeItem("token");
+    // router.push("/auth/login");
+  };
+
+  const handleUpdateProfile = () => {
+    // router.push("/user/update-profile");
+  };
+
+  const handleMyPurchases = () => {
+    // router.push("/user/my-purchases");
+  };
+
+  const handleTicketsSold = () => {
+    // router.push("/user/sold-tickets");
+  };
 
   if (!user) {
     return (
@@ -56,16 +75,52 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-10 rounded-lg shadow-lg text-center">
-        <h1 className="text-3xl font-bold mb-4">User Profile</h1>
-        <div className="text-black">
-          <p className="mb-2">
+    <div className="flex items-center justify-center h-screen bg-gray-100 text-black">
+      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold mb-4 text-center">User Profile</h1>
+        <div className="text-center mb-4">
+          <p>
             <strong>Name:</strong> {user.name}
           </p>
           <p>
             <strong>Email:</strong> {user.email}
           </p>
+          <p>
+            <strong>Mobile:</strong> {user.mobile}
+          </p>
+          <p>
+            <strong>Address:</strong> {user.address}
+          </p>
+          {/* Uncomment and add more fields as needed */}
+          {/* <p>
+            <strong>Contact Number:</strong> {user.contactNumber}
+          </p> */}
+        </div>
+        <div className="flex flex-col space-y-4">
+          <button
+            onClick={handleUpdateProfile}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+          >
+            Update Profile
+          </button>
+          <button
+            onClick={handleMyPurchases}
+            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-700"
+          >
+            My Purchases
+          </button>
+          <button
+            onClick={handleTicketsSold}
+            className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-700"
+          >
+            Tickets Sold
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </div>
