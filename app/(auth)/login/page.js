@@ -1,58 +1,73 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  
+  const [errors, setErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    validateForm();
+  }, [email, password]);
+
+  const validateForm = () => {
+    let errors = {};
+
+    if (!email) {
+      errors.email = 'Email is required.';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Email is invalid.';
+    }
+
+    if (!password) {
+      errors.password = 'Password is required.';
+    } 
+
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
+  };
+
   function delayForSeconds(seconds) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(); // Signal completion after the delay
       }, seconds * 1000); // Convert seconds to milliseconds
     });
   }
-  
-  const handleSubmit = async (e) => {
-    //e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:8888/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
 
-      const data = await response.json();
-      /*if (response.ok) {
-        console.log('Login successful:', result);
-        // Save the token to local storage or cookies
-        localStorage.setItem('token', result.token);
-      } else {
-        console.error('Login failed:', result);
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-    }*/
-      console.log(data);
-      delayForSeconds(5) // Wait for 2 seconds
-    .then(() => {
-      console.log("2 seconds have passed!");
-    })
-    .catch(error => {
-      console.error("Error occurred during delay:", error);
-    });
-      if (data.Error) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isFormValid) {
+      console.log('Form submitted successfully!');
+      try {
+        const response = await fetch('http://localhost:8888/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+        await delayForSeconds(5); // Wait for 5 seconds
+        console.log("5 seconds have passed!");
+        if (data.Error) {
           console.error(data.ErrorDetail);
-      } else {
+        } else {
           console.log(data.ResponseDetail);
-      }
-    }catch (error) {
+          router.push('/home');
+        }
+      } catch (error) {
         console.error('Error during login:', error);
       }
+    } else {
+      console.log('Form has errors. Please correct them.');
+    }
   };
 
   return (
@@ -89,6 +104,7 @@ export default function Login() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
+                  {errors.email && <p style={styles.error}>{errors.email}</p>}
                   <label className="text-start text-sm mt-2 mb-0 font-semibold">Password: </label>
                   <div className="bg-white w-72 p-1 border-2 border-y-gray mt-2 flex items-center">
                     <FaLock />
@@ -101,6 +117,7 @@ export default function Login() {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+                  {errors.password && <p style={styles.error}>{errors.password}</p>}
                   <div className="flex justify-between w-72 mb-5">
                     <label className="flex items-center text-xs">
                       <input type="checkbox" name="Remember" className="m-2 font-semibold" />
@@ -112,6 +129,8 @@ export default function Login() {
                     <button
                       type="submit"
                       className="bg-white text-black border-2 border-black py-2 px-4 rounded-lg font-md hover:bg-black hover:text-white mt-5 mb-3 text-sm"
+                      disabled={!isFormValid}
+                      style={{ opacity: isFormValid ? 1 : 0.5 }}
                     >
                       Log In
                     </button>
@@ -130,6 +149,14 @@ export default function Login() {
     </main>
   );
 }
+
+const styles = {
+  error: {
+    color: 'red',
+    fontSize: '14px',
+    marginBottom: '6px',
+  },
+};
 
 
 
